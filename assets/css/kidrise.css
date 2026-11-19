@@ -82,7 +82,7 @@ body::before {
 
 main, header, footer { position: relative; z-index: 1; }
 
-img { max-width: 100%; display: block; }
+img { max-width: 100%; height: auto; display: block; }
 a { color: inherit; text-decoration: none; }
 button { font: inherit; color: inherit; cursor: pointer; }
 :focus-visible { outline: 3px solid var(--sky); outline-offset: 3px; border-radius: 6px; }
@@ -1339,3 +1339,99 @@ a.tile:hover .tile__art { transform: rotate(-6deg) scale(1.05); }
 
 .phero .stat { border-color: var(--ink); background: var(--paper); }
 .phero .stat b { color: var(--coral); }
+
+/* ==========================================================================
+   UI 修正
+   ========================================================================== */
+/* 中文標題：只喺標點或空格斷行，避免「玩／具店」咁斷開 */
+.h-lg, .phero__title, .tile__title, .cta h2 { word-break: keep-all; overflow-wrap: anywhere; text-wrap: balance; }
+/* 文章封面：貼紙圓章 + 轉動同心圓 */
+.acard__cover span { z-index: 1; display: grid; place-items: center; width: 1.75em; height: 1.75em; font-size: 42px; line-height: 1; background: var(--paper); border: var(--border); border-radius: 50%; box-shadow: 4px 4px 0 var(--ink); }
+.acard--big .acard__cover span { font-size: 78px; box-shadow: var(--pop-lg); }
+.acard__cover::after { content: ""; position: absolute; left: 50%; top: 50%; width: 150%; aspect-ratio: 1; translate: -50% -50%; border-radius: 50%; background: repeating-radial-gradient(circle, transparent 0 34px, rgba(29, 27, 58, 0.09) 34px 36px); animation: spin 80s linear infinite; pointer-events: none; }
+
+/* ==========================================================================
+   FX（fx.js 互動效果）
+   ========================================================================== */
+@media (prefers-reduced-motion: no-preference) {
+  @view-transition { navigation: auto; }
+  ::view-transition-old(root) { animation: fx-vt-out 0.25s var(--ease) both; }
+  ::view-transition-new(root) { animation: fx-vt-in 0.5s var(--ease) both; }
+  .nav { view-transition-name: site-nav; }
+}
+@keyframes fx-vt-out { to { opacity: 0; transform: translateY(-14px) scale(0.99); } }
+@keyframes fx-vt-in { from { opacity: 0; transform: translateY(22px); } }
+
+/* 捲動進度條 */
+.fx-progress { position: fixed; left: 0; top: 0; width: 100%; height: 4px; z-index: 200; transform: scaleX(0); transform-origin: 0 50%; pointer-events: none; background: linear-gradient(90deg, var(--coral), var(--sun), var(--mint), var(--sky), var(--lilac)); }
+.fx-confetti { position: fixed; inset: 0; width: 100vw; height: 100vh; pointer-events: none; z-index: 300; }
+
+/* Hero 字母彈跳 */
+.hero__title .w .fx-lt { display: inline-block; animation: none; transform-origin: 50% 100%; cursor: default; }
+.hero__title .w .fx-lt.jelly { animation: fx-jelly 0.8s var(--bounce); }
+@keyframes fx-jelly {
+  0% { transform: none; }
+  22% { transform: scale(1.22, 0.78) translateY(4%); }
+  45% { transform: scale(0.86, 1.18) translateY(-16%) rotate(-4deg); }
+  68% { transform: scale(1.06, 0.95); }
+  100% { transform: none; }
+}
+.fx .collage { cursor: pointer; }
+
+/* 標題逐字彈出 */
+.fx-split.reveal { opacity: 1; transform: none; }
+.fx-w { display: inline-block; }
+.fx-ch { display: inline-block; opacity: 0; transform: translateY(0.55em) rotate(10deg) scale(0.85); transition: opacity 0.45s var(--ease), transform 0.75s var(--bounce); transition-delay: calc(var(--i) * 28ms); }
+.fx-in .fx-ch { opacity: 1; transform: none; }
+
+/* 跑馬燈隨捲動傾斜 */
+.band { transform: rotate(-1.5deg) skewX(var(--skew, 0deg)); }
+.band--sun { transform: rotate(1.2deg) skewX(var(--skew, 0deg)); }
+
+/* 卡片 3D 傾斜 + 反光 */
+:where(.pcard, .skill, .tier, .acard, .res) { position: relative; }
+.fx-tilting { transition: transform 0.12s linear, box-shadow 0.3s var(--ease) !important; box-shadow: var(--pop-lg) !important; will-change: transform; z-index: 2; }
+.fx-glare { position: absolute; inset: 0; z-index: 6; border-radius: inherit; pointer-events: none; opacity: 0; transition: opacity 0.35s; mix-blend-mode: soft-light; background: radial-gradient(380px circle at var(--gx, 50%) var(--gy, 50%), rgba(255, 255, 255, 0.75), transparent 50%); }
+.fx-tilting .fx-glare { opacity: 1; }
+
+/* 游標光圈 */
+.fx-cursor, .fx-dot { position: fixed; left: 0; top: 0; z-index: 400; pointer-events: none; transition: opacity 0.3s; }
+.fx-dot { width: 6px; height: 6px; margin: -3px 0 0 -3px; border-radius: 50%; background: var(--coral); }
+.fx-cursor { width: 36px; height: 36px; margin: -18px 0 0 -18px; }
+.fx-cursor span { position: absolute; inset: 0; display: grid; place-items: center; border-radius: 50%; border: 2px solid var(--ink); color: #fff; font-size: 6.4px; font-weight: 900; letter-spacing: 0.04em; transition: transform 0.4s var(--bounce), background 0.25s, border-color 0.25s; }
+.fx-cursor[data-mode="link"] span { transform: scale(1.45); background: rgba(255, 107, 87, 0.16); border-color: var(--coral); }
+.fx-cursor[data-mode="big"] span { transform: scale(2.2); background: var(--coral); border-width: 1px; }
+.fx-cursor[data-mode="dark"] span { border-color: rgba(255, 255, 255, 0.8); }
+.fx-cursor.press span { transform: scale(0.75); }
+.fx-cursor[data-mode="big"].press span { transform: scale(1.8); }
+.fx-cursor.gone, .fx-dot.gone { opacity: 0; }
+
+/* 深色區聚光燈 */
+.fx-spot { position: relative; isolation: isolate; }
+.fx-spot::after { content: ""; position: absolute; inset: 0; z-index: -1; pointer-events: none; background: radial-gradient(560px circle at var(--mx, -999px) var(--my, -999px), rgba(255, 194, 61, 0.16), rgba(139, 108, 255, 0.06) 40%, transparent 65%); }
+
+/* 探索盒拖曳 */
+.fx-drag { cursor: grab; user-select: none; -webkit-user-select: none; }
+.fx-drag.grabbing { cursor: grabbing; }
+.fx-drag::after { content: "↔ 拖曳轉動盒子"; position: absolute; bottom: 4px; left: 50%; translate: -50% 0; font-size: 12.5px; font-weight: 700; color: var(--muted); background: var(--paper); border: 1.5px dashed var(--line); padding: 3px 12px; border-radius: 999px; white-space: nowrap; }
+
+/* 產品／文章卡：捲入畫面時浮起（支援 scroll-driven animation 嘅瀏覽器） */
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .pcard, .acard, .res { animation: fx-enter linear both; animation-timeline: view(); animation-range: entry 0% entry 60%; }
+  }
+}
+@keyframes fx-enter { from { opacity: 0; translate: 0 56px; scale: 0.94; } to { opacity: 1; translate: 0 0; scale: 1; } }
+
+/* 手機：Hero 拼貼重新排位，避免卡片遮住價錢；標題字級收細避免標點單獨成行 */
+@media (max-width: 520px) {
+  .collage { aspect-ratio: 1 / 1.2; }
+  .card-float--main { width: 58%; left: 13%; top: 11%; }
+  .card-float--a { width: 32%; top: 1%; }
+  .card-float--b { width: 50%; top: 31%; }
+  .card-float--c { width: 50%; left: 0; bottom: 0; }
+  .phero__title { font-size: clamp(32px, 9.4vw, 42px); }
+}
+@media (max-width: 520px) {
+  .collage .floaty:not(.floaty--2):not(.floaty--3) { top: 62% !important; right: 0 !important; width: 48px !important; }
+}

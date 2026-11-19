@@ -40,6 +40,10 @@
       return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c];
     });
   };
+  // 交俾 fx.js 放彩紙（如果 fx.js 未載入就乜都唔做）
+  var celebrate = function (el, opts) {
+    document.dispatchEvent(new CustomEvent("kr:celebrate", { detail: { el: el, opts: opts } }));
+  };
   var money = function (n) { return "HK$" + Math.round(n).toLocaleString("en-HK"); };
   var PRODUCTS = window.KR_PRODUCTS || [];
 
@@ -398,6 +402,7 @@
         '<div class="pgrid pgrid--4">' + list.map(function (p) { return productCard(p, "gift_finder"); }).join("") + "</div>" +
         '<p class="pnote">✓ 可於網店加購禮物包裝　✓ 滿 $400 免運費（包括住宅）　✓ 價錢以網店結帳頁為準</p>';
       $("[data-restart]", body).addEventListener("click", function () { ans = {}; idx = 0; drawStep(); });
+      celebrate(finder, { count: 90 });
     }
     drawStep();
 
@@ -454,7 +459,11 @@
         '<div class="actcard__learn"><b>孩子學到甚麼：</b>' + esc(a.l) + "</div></div></div>" +
         '<div class="actcard__actions"><button type="button" class="btn btn--coral btn--sm" data-act-next>🎲 再抽一個</button><a class="btn btn--paper btn--sm" href="/activities/' + a.slug + '/">📄 完整活動卡及列印</a>' + relatedHtml(a.rel) + "</div>";
       cardEl.classList.remove("flip"); void cardEl.offsetWidth; cardEl.classList.add("flip");
-      $("[data-act-next]", cardEl).addEventListener("click", pick);
+      $("[data-act-next]", cardEl).addEventListener("click", pickFx);
+    }
+    function pickFx() {
+      pick();
+      if (current) celebrate(cardEl, { count: 26, emojis: [current.ico, "⭐", "✨"], power: 10 });
     }
     function pick() {
       var p = pool();
@@ -472,7 +481,7 @@
       });
     });
     var go = $("[data-act-go]", actRoot);
-    if (go) go.addEventListener("click", pick);
+    if (go) go.addEventListener("click", pickFx);
     // 本週推介：按週數輪替
     var week = Math.floor((Date.now() - new Date(2026, 0, 5).getTime()) / (7 * 864e5));
     draw(ACTIVITIES[((week % ACTIVITIES.length) + ACTIVITIES.length) % ACTIVITIES.length]);
