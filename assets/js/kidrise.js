@@ -525,6 +525,19 @@
     });
   }
 
+  /* ---------- Resources: theme filter ---------- */
+  $$("[data-res-filters]").forEach(function (root) {
+    $$("[data-res-filter]", root).forEach(function (b) {
+      b.addEventListener("click", function () {
+        var t = b.getAttribute("data-res-filter");
+        $$("[data-res-filter]", root).forEach(function (o) { o.setAttribute("aria-pressed", o === b ? "true" : "false"); });
+        $$(".res", root).forEach(function (card) {
+          card.style.display = t === "all" || card.getAttribute("data-theme") === t ? "" : "none";
+        });
+      });
+    });
+  });
+
   /* ---------- Enquiry forms → WhatsApp / Email ---------- */
   $$("form[data-enquiry]").forEach(function (form) {
     form.addEventListener("submit", function (e) {
