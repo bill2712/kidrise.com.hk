@@ -40,6 +40,11 @@
       return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c];
     });
   };
+  // GA4 事件（未設定 GA 時乜都唔做）
+  var track = function (name, params) {
+    try { if (typeof window.gtag === "function") window.gtag("event", name, params || {}); } catch (e) {}
+  };
+  KR.track = track;
   // 交俾 fx.js 放彩紙（如果 fx.js 未載入就乜都唔做）
   var celebrate = function (el, opts) {
     document.dispatchEvent(new CustomEvent("kr:celebrate", { detail: { el: el, opts: opts } }));
@@ -373,6 +378,7 @@
     function drawResult() {
       bar.style.width = "100%";
       stepName.textContent = "為你配對完成！";
+      track("gift_finder_complete", { age: ans.age, budget: ans.budget, interest: ans.interest });
       var r = ans.budget.split("-").map(parseFloat);
       var interests = ans.interest === "any" ? null : ans.interest.split("|");
       var base = PRODUCTS.filter(function (p) { return p.ages.indexOf(ans.age) > -1; });
@@ -463,6 +469,7 @@
     }
     function pickFx() {
       pick();
+      if (current) track("activity_draw", { item_id: current.slug });
       if (current) celebrate(cardEl, { count: 26, emojis: [current.ico, "⭐", "✨"], power: 10 });
     }
     function pick() {
@@ -508,7 +515,26 @@
 
   /* ---------- Print current page (activity cards & printables) ---------- */
   $$("[data-print-page]").forEach(function (b) {
-    b.addEventListener("click", function () { window.print(); });
+    b.addEventListener("click", function () {
+      track("print_worksheet", { item_id: location.pathname.split("/").filter(Boolean).pop() || "", page_type: location.pathname.split("/")[1] || "" });
+      window.print();
+    });
+  });
+
+  /* ---------- GA4：網店、WhatsApp、電郵點擊 ---------- */
+  document.addEventListener("click", function (e) {
+    var a = e.target.closest && e.target.closest("a[href]");
+    if (!a) return;
+    var href = a.getAttribute("href");
+    if (href.indexOf("stemtoy.com.hk") > -1) {
+      var m = href.match(/\/products\/([^?#/]+)/);
+      var c = href.match(/utm_campaign=([^&#]+)/);
+      track("shop_click", { link_url: href.split("?")[0], item_id: m ? m[1] : "", campaign: c ? decodeURIComponent(c[1]) : "", link_text: (a.textContent || "").trim().slice(0, 60) });
+    } else if (href.indexOf("wa.me/") > -1) {
+      track("whatsapp_click", { page_path: location.pathname });
+    } else if (href.indexOf("mailto:") === 0) {
+      track("email_click", { page_path: location.pathname });
+    }
   });
 
   /* ---------- Learn: category filter ---------- */
@@ -538,7 +564,73 @@
     });
   });
 
-  /* ---------- Enquiry forms → WhatsApp / Email ---------- */
+  /* ---------- Shopify 表格（stemtoy.com.hk）----------
+     data-shop="customer"：訂閱／登記 → Shopify 客戶名單，按 data-tags 及 [data-tag] 欄位加標籤
+     data-shop="contact"：查詢 → Shopify 聯絡表格，寄到網店電郵
+     以新分頁提交，Shopify 如要求驗證，家長可以直接完成。 */
+  function shopSubmit(form, text) {
+    var kind = form.getAttribute("data-shop") || "contact";
+    var f = document.createElement("form");
+    f.method = "post";
+    f.action = KR.shop + "/contact";
+    f.target = "_blank";
+    f.acceptCharset = "UTF-8";
+    f.style.display = "none";
+    var add = function (n, v) {
+      var i = document.createElement("input");
+      i.type = "hidden"; i.name = n; i.value = v;
+      f.appendChild(i);
+    };
+    add("form_type", kind);
+    add("utf8", "✓");
+    var email = $('input[type="email"]', form);
+    add("contact[email]", email ? email.value.trim() : "");
+    if (kind === "customer") {
+      var tags = (form.getAttribute("data-tags") || "").split(",").filter(Boolean);
+      $$("[data-tag]", form).forEach(function (el) {
+        var p = el.getAttribute("data-tag");
+        var vals = el.matches("fieldset") ? $$("input:checked", el).map(function (i) { return i.value; }) : [el.value];
+        vals.forEach(function (v) { if (v) tags.push(p + ":" + v); });
+      });
+      tags.push("kidrise.com.hk");
+      add("contact[tags]", tags.join(","));
+      var fn = $('[data-shop-field="first_name"]', form);
+      if (fn && fn.value.trim()) add("contact[first_name]", fn.value.trim());
+    } else {
+      $$("[data-shop-field]", form).forEach(function (el) {
+        if (el.value.trim()) add("contact[" + el.getAttribute("data-shop-field") + "]", el.value.trim());
+      });
+      add("contact[body]", text);
+    }
+    document.body.appendChild(f);
+    f.submit();
+    f.remove();
+  }
+  function formDone(form, isNews) {
+    try { if (isNews) localStorage.setItem("kr_sub", "1"); } catch (e) {}
+    var box = document.createElement("div");
+    box.className = "form-done";
+    box.setAttribute("role", "status");
+    box.innerHTML = isNews
+      ? '<b>🎉 多謝訂閱！</b><span>已喺新分頁開啟 stemtoy.com.hk 確認，如出現驗證請完成。你的工作紙合集已經準備好：</span><a class="btn btn--sun btn--sm" href="/resources/bundle/">打開工作紙合集 →</a>'
+      : '<b>✅ 已收到！</b><span>已喺新分頁開啟 stemtoy.com.hk 確認頁，如出現驗證請完成即可。我們會盡快聯絡你。</span>';
+    form.replaceWith(box);
+    document.dispatchEvent(new CustomEvent("kr:celebrate", { detail: { el: box, opts: { count: 70 } } }));
+  }
+
+  // 已訂閱的訪客：喺訂閱表格下面直接顯示合集連結
+  try {
+    if (localStorage.getItem("kr_sub") === "1") {
+      $$("form[data-newsletter]").forEach(function (f) {
+        var p = document.createElement("p");
+        p.className = "nl-sub";
+        p.innerHTML = '你已訂閱 ✓ <a href="/resources/bundle/">打開工作紙合集 →</a>';
+        f.parentNode.insertBefore(p, f.nextSibling);
+      });
+    }
+  } catch (e) {}
+
+  /* ---------- Enquiry forms → Shopify / WhatsApp / Email ---------- */
   $$("form[data-enquiry]").forEach(function (form) {
     form.addEventListener("submit", function (e) {
       e.preventDefault();
@@ -555,6 +647,14 @@
       });
       lines.push("（來自 kidrise.com.hk）");
       var text = lines.join("\n");
+      var isNews = form.hasAttribute("data-newsletter");
+      if (isNews) track("sign_up", { method: "newsletter", form_name: title });
+      else track("generate_lead", { form_name: title, method: via });
+      if (via === "shop") {
+        shopSubmit(form, text);
+        formDone(form, isNews);
+        return;
+      }
       if (via === "mail") {
         window.location.href = "mailto:" + KR.email + "?subject=" + encodeURIComponent(title) + "&body=" + encodeURIComponent(text);
       } else {

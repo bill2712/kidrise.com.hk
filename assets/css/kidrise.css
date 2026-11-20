@@ -1482,3 +1482,29 @@ a.tile:hover .tile__art { transform: rotate(-6deg) scale(1.05); }
 .btn svg { width: 18px; height: 18px; flex-shrink: 0; }
 .kplan__link { font-weight: 700; font-size: 14px; text-decoration: underline; text-underline-offset: 3px; }
 .kplan td:first-child, .kplan td:nth-child(3) { white-space: nowrap; }
+
+/* 表格：同意說明、提交成功 */
+.form__consent { font-size: 12.5px; line-height: 1.6; opacity: 0.85; margin: 10px 0 0; }
+.form__consent a, .form__note a { text-decoration: underline; text-underline-offset: 2px; }
+.form-done { display: flex; flex-direction: column; gap: 8px; align-items: flex-start; padding: 18px 20px; border: 2px dashed currentColor; border-radius: var(--r-md); width: 100%; background: rgba(255, 255, 255, 0.08); }
+.form-done b { font-size: 18px; }
+.form-done span { font-size: 14.5px; line-height: 1.6; }
+.nl-sub { font-size: 13px; margin: 6px 0 0; opacity: 0.9; }
+.nl-sub a { font-weight: 800; text-decoration: underline; }
+
+/* 工作紙合集 */
+.bundle__toc { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 18px; }
+.bundle__group { background: var(--paper); border: var(--border); border-radius: var(--r-md); padding: 18px 20px; }
+.bundle__group h3 { font-size: 17px; margin-bottom: 8px; }
+.bundle__group ol { margin: 0; padding-left: 1.3em; font-size: 14.5px; display: grid; gap: 4px; }
+.bundle { display: grid; gap: 40px; max-width: 860px; }
+.bundle__meta { font-size: 14px; margin: 0 0 10px; color: var(--ink-2); }
+.bundle__meta b { font-family: var(--font-display); color: var(--coral); margin-right: 6px; }
+@media print {
+  body.bundle-print main > section.bundle-toc { display: none !important; }
+  body.bundle-print .print-area ~ .print-area { display: block !important; }
+  body.bundle-print .bundle { display: block !important; max-width: none; }
+  body.bundle-print .bundle__meta { display: none !important; }
+  body.bundle-print .bundle__item { break-after: page; page-break-after: always; }
+  body.bundle-print .bundle__item:last-child { break-after: auto; page-break-after: auto; }
+}
