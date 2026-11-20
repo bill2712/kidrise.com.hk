@@ -175,6 +175,7 @@
       '<a class="pcard" href="' + esc(KR.productUrl(p.h, campaign)) + '" target="_blank" rel="noopener" title="' + esc(p.full) + '">' +
       '<div class="pcard__img"><img loading="lazy" decoding="async" src="' + esc(p.img) + '" alt="' + esc(p.n) + '" width="640" height="640"><div class="pcard__badges">' + badges + "</div></div>" +
       '<div class="pcard__body"><div class="pcard__name">' + esc(p.n) + "</div>" +
+      (p.rc ? '<div class="pcard__rate" aria-label="網店評分 ' + p.r + ' / 5，' + p.rc + ' 個評價"><span class="stars" style="--r:' + p.r + '" aria-hidden="true">★★★★★</span><b>' + p.r + "</b><span>(" + p.rc + ")</span></div>" : "") +
       '<div class="pcard__ages">' + ages + "</div>" +
       '<div class="pcard__foot"><div class="pcard__price">' + compare + money(p.p) + "</div>" +
       '<span class="pcard__go" aria-hidden="true">' + ARROW + "</span></div></div></a>"

@@ -1554,3 +1554,13 @@ html.search-open { overflow: hidden; }
   .search { margin-top: 12px; max-height: calc(100dvh - 24px); }
   .search__input { font-size: 17px; }
 }
+
+/* ---------- 網店評分 ---------- */
+.stars { --r: 5; position: relative; display: inline-block; font-size: 13px; letter-spacing: 1px; line-height: 1; color: transparent; background: linear-gradient(90deg, var(--sun) calc(var(--r) / 5 * 100%), rgba(29, 27, 58, 0.18) 0); -webkit-background-clip: text; background-clip: text; }
+.pcard__rate { display: flex; align-items: center; gap: 5px; font-size: 12.5px; color: var(--muted); margin: -2px 0 2px; }
+.pcard__rate b { color: var(--ink); font-weight: 800; }
+.proof__star { font-style: normal; color: var(--sun); font-size: 0.8em; margin-left: 2px; -webkit-text-stroke: 1px var(--ink); }
+.rating-band { display: flex; align-items: center; justify-content: center; gap: 16px; flex-wrap: wrap; text-align: left; }
+.rating-band .stars--lg { font-size: 30px; letter-spacing: 3px; }
+.rating-band p { margin: 0; font-size: 17px; }
+.rating-band small { display: block; font-size: 12.5px; color: var(--muted); }
