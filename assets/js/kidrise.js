@@ -564,73 +564,7 @@
     });
   });
 
-  /* ---------- Shopify 表格（stemtoy.com.hk）----------
-     data-shop="customer"：訂閱／登記 → Shopify 客戶名單，按 data-tags 及 [data-tag] 欄位加標籤
-     data-shop="contact"：查詢 → Shopify 聯絡表格，寄到網店電郵
-     以新分頁提交，Shopify 如要求驗證，家長可以直接完成。 */
-  function shopSubmit(form, text) {
-    var kind = form.getAttribute("data-shop") || "contact";
-    var f = document.createElement("form");
-    f.method = "post";
-    f.action = KR.shop + "/contact";
-    f.target = "_blank";
-    f.acceptCharset = "UTF-8";
-    f.style.display = "none";
-    var add = function (n, v) {
-      var i = document.createElement("input");
-      i.type = "hidden"; i.name = n; i.value = v;
-      f.appendChild(i);
-    };
-    add("form_type", kind);
-    add("utf8", "✓");
-    var email = $('input[type="email"]', form);
-    add("contact[email]", email ? email.value.trim() : "");
-    if (kind === "customer") {
-      var tags = (form.getAttribute("data-tags") || "").split(",").filter(Boolean);
-      $$("[data-tag]", form).forEach(function (el) {
-        var p = el.getAttribute("data-tag");
-        var vals = el.matches("fieldset") ? $$("input:checked", el).map(function (i) { return i.value; }) : [el.value];
-        vals.forEach(function (v) { if (v) tags.push(p + ":" + v); });
-      });
-      tags.push("kidrise.com.hk");
-      add("contact[tags]", tags.join(","));
-      var fn = $('[data-shop-field="first_name"]', form);
-      if (fn && fn.value.trim()) add("contact[first_name]", fn.value.trim());
-    } else {
-      $$("[data-shop-field]", form).forEach(function (el) {
-        if (el.value.trim()) add("contact[" + el.getAttribute("data-shop-field") + "]", el.value.trim());
-      });
-      add("contact[body]", text);
-    }
-    document.body.appendChild(f);
-    f.submit();
-    f.remove();
-  }
-  function formDone(form, isNews) {
-    try { if (isNews) localStorage.setItem("kr_sub", "1"); } catch (e) {}
-    var box = document.createElement("div");
-    box.className = "form-done";
-    box.setAttribute("role", "status");
-    box.innerHTML = isNews
-      ? '<b>🎉 多謝訂閱！</b><span>已喺新分頁開啟 stemtoy.com.hk 確認，如出現驗證請完成。你的工作紙合集已經準備好：</span><a class="btn btn--sun btn--sm" href="/resources/bundle/">打開工作紙合集 →</a>'
-      : '<b>✅ 已收到！</b><span>已喺新分頁開啟 stemtoy.com.hk 確認頁，如出現驗證請完成即可。我們會盡快聯絡你。</span>';
-    form.replaceWith(box);
-    document.dispatchEvent(new CustomEvent("kr:celebrate", { detail: { el: box, opts: { count: 70 } } }));
-  }
-
-  // 已訂閱的訪客：喺訂閱表格下面直接顯示合集連結
-  try {
-    if (localStorage.getItem("kr_sub") === "1") {
-      $$("form[data-newsletter]").forEach(function (f) {
-        var p = document.createElement("p");
-        p.className = "nl-sub";
-        p.innerHTML = '你已訂閱 ✓ <a href="/resources/bundle/">打開工作紙合集 →</a>';
-        f.parentNode.insertBefore(p, f.nextSibling);
-      });
-    }
-  } catch (e) {}
-
-  /* ---------- Enquiry forms → Shopify / WhatsApp / Email ---------- */
+  /* ---------- Enquiry forms → WhatsApp / Email（不經任何後台）---------- */
   $$("form[data-enquiry]").forEach(function (form) {
     form.addEventListener("submit", function (e) {
       e.preventDefault();
@@ -647,14 +581,7 @@
       });
       lines.push("（來自 kidrise.com.hk）");
       var text = lines.join("\n");
-      var isNews = form.hasAttribute("data-newsletter");
-      if (isNews) track("sign_up", { method: "newsletter", form_name: title });
-      else track("generate_lead", { form_name: title, method: via });
-      if (via === "shop") {
-        shopSubmit(form, text);
-        formDone(form, isNews);
-        return;
-      }
+      track("generate_lead", { form_name: title, method: via });
       if (via === "mail") {
         window.location.href = "mailto:" + KR.email + "?subject=" + encodeURIComponent(title) + "&body=" + encodeURIComponent(text);
       } else {

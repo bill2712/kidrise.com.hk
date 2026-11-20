@@ -1486,11 +1486,6 @@ a.tile:hover .tile__art { transform: rotate(-6deg) scale(1.05); }
 /* 表格：同意說明、提交成功 */
 .form__consent { font-size: 12.5px; line-height: 1.6; opacity: 0.85; margin: 10px 0 0; }
 .form__consent a, .form__note a { text-decoration: underline; text-underline-offset: 2px; }
-.form-done { display: flex; flex-direction: column; gap: 8px; align-items: flex-start; padding: 18px 20px; border: 2px dashed currentColor; border-radius: var(--r-md); width: 100%; background: rgba(255, 255, 255, 0.08); }
-.form-done b { font-size: 18px; }
-.form-done span { font-size: 14.5px; line-height: 1.6; }
-.nl-sub { font-size: 13px; margin: 6px 0 0; opacity: 0.9; }
-.nl-sub a { font-weight: 800; text-decoration: underline; }
 
 /* 工作紙合集 */
 .bundle__toc { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 18px; }
