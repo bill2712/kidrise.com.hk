@@ -591,6 +591,131 @@
     });
   });
 
+  /* ---------- 站內搜尋（/search-index.json，按需要先載入）---------- */
+  (function () {
+    var dlg = $("#site-search");
+    var pageInput = $("[data-search-page]");
+    if (!dlg && !pageInput) return;
+    var INDEX = null, loading = null;
+    var load = function () {
+      if (INDEX) return Promise.resolve(INDEX);
+      if (!loading) loading = fetch("/search-index.json").then(function (r) { return r.json(); }).then(function (d) {
+        INDEX = d.map(function (x) { x._t = (x.t + " " + x.f).toLowerCase(); x._d = (x.d + " " + x.k).toLowerCase(); return x; });
+        return INDEX;
+      });
+      return loading;
+    };
+    var norm = function (q) { return q.toLowerCase().replace(/[，。！？、：；]/g, " ").trim(); };
+    var score = function (x, q) {
+      var terms = q.split(/\s+/).filter(Boolean), sc = 0;
+      for (var i = 0; i < terms.length; i++) {
+        var t = terms[i], s1 = 0;
+        if (x._t.indexOf(t) > -1) s1 = x._t.indexOf(t) === 0 ? 14 : 10;
+        else if (x._d.indexOf(t) > -1) s1 = 4;
+        else if (t.length >= 3) {
+          // 中文冇空格：用雙字詞配對，一半以上命中都計
+          var hit = 0, n = t.length - 1;
+          for (var j = 0; j < n; j++) { var bg = t.substr(j, 2); if (x._t.indexOf(bg) > -1) hit += 2; else if (x._d.indexOf(bg) > -1) hit += 1; }
+          if (hit >= n) s1 = hit / n;
+        }
+        if (!s1) return 0;
+        sc += s1;
+      }
+      return sc;
+    };
+    var hl = function (text, q) {
+      var out = esc(text);
+      q.split(/\s+/).filter(function (t) { return t.length > 0; }).forEach(function (t) {
+        var e = esc(t).replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+        out = out.replace(new RegExp("(" + e + ")", "gi"), "<mark>$1</mark>");
+      });
+      return out;
+    };
+    var SUGGEST = ["月相", "科學實驗", "工作紙", "戶外", "生日禮物", "3 歲", "顯微鏡", "專注力", "學校"];
+    var render = function (box, raw) {
+      var q = norm(raw);
+      if (!q) {
+        box.innerHTML = '<p class="search__hint">熱門搜尋</p><div class="search__chips">' +
+          SUGGEST.map(function (w) { return '<button type="button" class="chip" data-q="' + esc(w) + '">' + esc(w) + "</button>"; }).join("") + "</div>";
+        return;
+      }
+      var res = INDEX.map(function (x) { return [score(x, q), x]; }).filter(function (r) { return r[0] > 0; })
+        .sort(function (a, b) { return b[0] - a[0]; }).slice(0, 30);
+      if (!res.length) {
+        box.innerHTML = '<p class="search__empty">找不到「' + esc(raw) + '」。試下其他字眼，或者 <a href="/resources/">瀏覽全部免費資源</a>。</p>';
+        return;
+      }
+      box.innerHTML = '<p class="search__hint">' + res.length + (res.length === 30 ? "+" : "") + " 個結果</p><ul class=\"search__list\">" + res.map(function (r) {
+        var x = r[1];
+        return '<li><a class="search__item" href="' + x.u + '"><span class="search__ico" style="background:var(--' + x.c + '-soft)">' + (x.i || "📄") + "</span>" +
+          '<span class="search__txt"><span class="search__kind">' + esc(x.k) + "</span><b>" + hl(x.t, q) + "</b><small>" + hl(x.d.slice(0, 70) + (x.d.length > 70 ? "…" : ""), q) + "</small></span></a></li>";
+      }).join("") + "</ul>";
+    };
+    var bind = function (input, box) {
+      var timer, sent = "";
+      var run = function () {
+        load().then(function () { render(box, input.value); });
+        clearTimeout(timer);
+        timer = setTimeout(function () {
+          var q = input.value.trim();
+          if (q.length > 1 && q !== sent) { sent = q; track("search", { search_term: q }); }
+        }, 1200);
+      };
+      input.addEventListener("input", run);
+      box.addEventListener("click", function (e) {
+        var c = e.target.closest("[data-q]");
+        if (c) { input.value = c.getAttribute("data-q"); run(); input.focus(); }
+      });
+      input.addEventListener("keydown", function (e) {
+        var items = $$(".search__item", box);
+        var cur = items.indexOf(document.activeElement);
+        if (e.key === "ArrowDown" && items.length) { e.preventDefault(); items[0].focus(); }
+        if (e.key === "Enter") {
+          e.preventDefault();
+          if (items[0]) { location.href = items[0].getAttribute("href"); }
+        }
+        void cur;
+      });
+      box.addEventListener("keydown", function (e) {
+        var items = $$(".search__item", box), i = items.indexOf(document.activeElement);
+        if (i < 0) return;
+        if (e.key === "ArrowDown") { e.preventDefault(); (items[i + 1] || items[i]).focus(); }
+        if (e.key === "ArrowUp") { e.preventDefault(); (items[i - 1] || input).focus(); }
+      });
+      return run;
+    };
+    if (dlg) {
+      var input = $(".search__input", dlg), box = $("[data-search-results]", dlg);
+      var run = bind(input, box);
+      var open = function (e) {
+        if (e) e.preventDefault();
+        if (typeof dlg.showModal !== "function") { location.href = "/search/"; return; }
+        if (!dlg.open) dlg.showModal();
+        document.documentElement.classList.add("search-open");
+        input.focus(); input.select();
+        run();
+      };
+      dlg.addEventListener("close", function () { document.documentElement.classList.remove("search-open"); });
+      $$("[data-search-open]").forEach(function (b) { b.addEventListener("click", open); });
+      $("[data-search-close]", dlg).addEventListener("click", function () { dlg.close(); });
+      dlg.addEventListener("click", function (e) { if (e.target === dlg) dlg.close(); });
+      document.addEventListener("keydown", function (e) {
+        var typing = /input|textarea|select/i.test((e.target.tagName || "")) || e.target.isContentEditable;
+        if ((e.key === "/" && !typing) || ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "k")) open(e);
+      });
+    }
+    if (pageInput) {
+      var runPage = bind(pageInput, $("[data-search-results]", $("main")));
+      pageInput.value = new URLSearchParams(location.search).get("q") || "";
+      pageInput.form.addEventListener("submit", function (e) {
+        e.preventDefault();
+        history.replaceState(null, "", "/search/?q=" + encodeURIComponent(pageInput.value.trim()));
+        runPage();
+      });
+      runPage();
+    }
+  })();
+
   /* ---------- Footer year ---------- */
   $$("[data-year]").forEach(function (el) { el.textContent = new Date().getFullYear(); });
 })();
