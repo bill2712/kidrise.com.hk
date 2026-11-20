@@ -160,6 +160,20 @@
 
   /* ---------- 4. 標題逐字彈出 ---------- */
   var PUNCT = /^[，。、？！：；」』）》,.!?:;)]$/;
+  // 按「字形」切字（emoji、組合字唔會被拆開），英文數字連續當一個詞
+  var seg = window.Intl && Intl.Segmenter ? new Intl.Segmenter("zh-HK", { granularity: "grapheme" }) : null;
+  function tokenize(str) {
+    var chars = seg ? Array.from(seg.segment(str), function (x) { return x.segment; }) : Array.from(str);
+    var out = [];
+    chars.forEach(function (c) {
+      var last = out[out.length - 1];
+      var word = /^[A-Za-z0-9$+\-–.'’]$/;
+      var space = /^\s+$/;
+      if (last && ((word.test(c) && /^[A-Za-z0-9$+\-–.'’]+$/.test(last)) || (space.test(c) && space.test(last)))) out[out.length - 1] = last + c;
+      else out.push(c);
+    });
+    return out;
+  }
   function splitText(el) {
     var i = 0;
     var walker = doc.createTreeWalker(el, NodeFilter.SHOW_TEXT, null);
@@ -167,7 +181,7 @@
     while (walker.nextNode()) nodes.push(walker.currentNode);
     // 以標點／空格分詞組（.fx-w），詞組內逐字（.fx-ch）——保持中文唔會喺句中亂斷行
     nodes.forEach(function (node) {
-      var tokens = node.nodeValue.match(/[A-Za-z0-9$+\-–.'’]+|\s+|[\s\S]/g) || [];
+      var tokens = tokenize(node.nodeValue);
       var frag = doc.createDocumentFragment();
       var word = null, prev = null;
       tokens.forEach(function (tk) {

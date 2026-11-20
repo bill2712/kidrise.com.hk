@@ -1435,3 +1435,50 @@ a.tile:hover .tile__art { transform: rotate(-6deg) scale(1.05); }
 @media (max-width: 520px) {
   .collage .floaty:not(.floaty--2):not(.floaty--3) { top: 62% !important; right: 0 !important; width: 48px !important; }
 }
+
+/* ==========================================================================
+   探索盒詳細頁
+   ========================================================================== */
+.kstats { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; }
+.stat b.stat--sm { font-size: clamp(26px, 3vw, 38px); }
+.kitems { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
+@media (max-width: 1000px) { .kitems { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 520px) { .kitems { grid-template-columns: 1fr; } }
+.kitem { background: #fff; border: var(--border); border-radius: var(--r-md); padding: 18px 20px; display: flex; flex-direction: column; gap: 6px; position: relative; }
+.kitem::before { content: "✓"; position: absolute; top: -12px; right: 14px; width: 26px; height: 26px; border-radius: 50%; background: var(--mint); color: #fff; border: 2px solid var(--ink); display: grid; place-items: center; font-weight: 900; font-size: 13px; }
+.kitem b { font-size: 16px; line-height: 1.4; }
+.kitem span { font-size: 14px; color: var(--ink-2); line-height: 1.6; }
+.kmissions { display: grid; gap: 22px; max-width: 980px; margin: 0 auto; }
+.kmission { background: var(--paper); border: var(--border); border-radius: var(--r-lg); box-shadow: var(--pop); padding: clamp(20px, 3vw, 34px); scroll-margin-top: 100px; }
+.kmission__head { display: flex; gap: 18px; align-items: flex-start; }
+.kmission__n { flex-shrink: 0; width: 58px; height: 58px; border-radius: 18px; border: var(--border); display: grid; place-items: center; font-family: var(--font-display); font-weight: 800; font-size: 28px; box-shadow: 3px 3px 0 var(--ink); transform: rotate(-4deg); }
+.kmission__en { font-family: var(--font-display); font-weight: 800; font-size: 12.5px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); }
+.kmission__head h3 { font-size: clamp(22px, 2.4vw, 30px); margin: 2px 0 8px; }
+.kmission__meta { display: flex; gap: 8px; flex-wrap: wrap; }
+.kmission__goal { margin: 18px 0 0; padding: 12px 16px; border-radius: 14px; background: var(--sun-soft); border: 1.5px dashed var(--ink); font-size: 15.5px; }
+.kmission__grid { display: grid; grid-template-columns: 1fr 1.5fr; gap: 26px; margin-top: 20px; }
+.kmission__grid--2 { grid-template-columns: 1fr 1fr; gap: 16px; }
+@media (max-width: 760px) { .kmission__grid, .kmission__grid--2 { grid-template-columns: 1fr; gap: 14px; } }
+.kmission h4 { font-size: 16px; margin: 0 0 8px; }
+.kmission ol { margin: 0; padding-left: 1.3em; display: grid; gap: 6px; font-size: 15.5px; }
+.kmission .ticks { font-size: 15px; }
+.kmission__ask, .kmission__ext { border: 1.5px solid var(--ink); border-radius: 16px; padding: 14px 18px; background: #fff; }
+.kmission__ask ul { margin: 0; padding-left: 1.1em; font-size: 15px; display: grid; gap: 4px; }
+.kmission__ext p { margin: 0; font-size: 15px; }
+.kmission__links { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 18px; }
+.kplan td, .kplan th { vertical-align: middle; }
+.kplan .btn { white-space: normal; text-align: left; }
+.kitminis { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; }
+@media (max-width: 700px) { .kitminis { grid-template-columns: 1fr; } }
+.kitmini { display: flex; align-items: center; gap: 16px; padding: 18px 22px; border: var(--border); border-radius: var(--r-md); background: var(--paper); box-shadow: var(--pop); transition: transform 0.3s var(--ease); }
+.kitmini:hover { transform: translate(-3px, -3px); }
+.kitmini__ico { width: 56px; height: 56px; border-radius: 16px; border: var(--border); background: var(--kc); display: grid; place-items: center; font-size: 28px; flex-shrink: 0; }
+.kitmini__txt { flex: 1; display: flex; flex-direction: column; }
+.kitmini small { font-family: var(--font-display); font-weight: 800; font-size: 12px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); }
+.kitmini b { font-size: 20px; }
+.kitmini em { font-style: normal; font-size: 13px; color: var(--ink-2); }
+.kitmini .arr { font-size: 22px; font-weight: 800; }
+.kit__more { font-weight: 800; text-decoration: underline; text-underline-offset: 3px; font-size: 14.5px; }
+.btn svg { width: 18px; height: 18px; flex-shrink: 0; }
+.kplan__link { font-weight: 700; font-size: 14px; text-decoration: underline; text-underline-offset: 3px; }
+.kplan td:first-child, .kplan td:nth-child(3) { white-space: nowrap; }

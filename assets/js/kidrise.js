@@ -532,7 +532,7 @@
         var t = b.getAttribute("data-res-filter");
         $$("[data-res-filter]", root).forEach(function (o) { o.setAttribute("aria-pressed", o === b ? "true" : "false"); });
         $$(".res", root).forEach(function (card) {
-          card.style.display = t === "all" || card.getAttribute("data-theme") === t ? "" : "none";
+          card.style.display = t === "all" || card.getAttribute("data-theme") === t || card.getAttribute("data-kit") === t ? "" : "none";
         });
       });
     });
