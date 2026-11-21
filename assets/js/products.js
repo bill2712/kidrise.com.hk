@@ -16,7 +16,8 @@ window.KR_PRODUCTS = [
   "area": "science",
   "vendor": "Kidrise🧒🏻STEM香港教育玩具｜STEAM科學實驗玩具｜STEM幼兒教育玩具｜啟智早教玩具｜蒙特梭利教具",
   "r": 4.6,
-  "rc": 210
+  "rc": 210,
+  "ne": "Amazing Telescope for Kids (60×)"
  },
  {
   "h": "kidrise-amazing-microscope",
@@ -33,7 +34,8 @@ window.KR_PRODUCTS = [
   "area": "science",
   "vendor": "Kidrise🧒🏻STEM香港教育玩具｜STEAM科學實驗玩具｜STEM幼兒教育玩具｜啟智早教玩具｜蒙特梭利教具",
   "r": 4.6,
-  "rc": 165
+  "rc": 165,
+  "ne": "Amazing Microscope for Kids"
  },
  {
   "h": "kidrise-science-1000x-digital-microscope",
@@ -50,7 +52,8 @@ window.KR_PRODUCTS = [
   "area": "science",
   "vendor": "Kidrise🧒🏻STEM香港教育玩具｜STEAM科學實驗玩具｜STEM幼兒教育玩具｜啟智早教玩具｜蒙特梭利教具",
   "r": 4.4,
-  "rc": 95
+  "rc": 95,
+  "ne": "1000× Digital Microscope with LCD Screen"
  },
  {
   "h": "kidrise-bundle-telescope-microscope",
@@ -67,7 +70,8 @@ window.KR_PRODUCTS = [
   "area": "science",
   "vendor": "Kidrise🧒🏻STEM香港教育玩具｜STEAM科學實驗玩具｜STEM幼兒教育玩具｜啟智早教玩具｜蒙特梭利教具",
   "r": 4.4,
-  "rc": 288
+  "rc": 288,
+  "ne": "Telescope + Microscope Explorer Bundle"
  },
  {
   "h": "kidrise-microscope-adventure-web-app",
@@ -84,7 +88,8 @@ window.KR_PRODUCTS = [
   "area": "science",
   "vendor": "Kidrise🧒🏻STEM香港教育玩具｜STEAM科學實驗玩具｜STEM幼兒教育玩具｜啟智早教玩具｜蒙特梭利教具",
   "r": 4.7,
-  "rc": 46
+  "rc": 46,
+  "ne": "Microscope Adventure Web App"
  },
  {
   "h": "kidrise-telescope-web-app",
@@ -101,7 +106,8 @@ window.KR_PRODUCTS = [
   "area": "science",
   "vendor": "Kidrise🧒🏻STEM香港教育玩具｜STEAM科學實驗玩具｜STEM幼兒教育玩具｜啟智早教玩具｜蒙特梭利教具",
   "r": 4.7,
-  "rc": 19
+  "rc": 19,
+  "ne": "Star Explorer Web App"
  },
  {
   "h": "kidrise-wooden-model-toy-robot-hand",
@@ -118,7 +124,8 @@ window.KR_PRODUCTS = [
   "area": "build",
   "vendor": "Kidrise🧒🏻STEM香港教育玩具｜STEAM科學實驗玩具｜STEM幼兒教育玩具｜啟智早教玩具｜蒙特梭利教具",
   "r": 4.5,
-  "rc": 88
+  "rc": 88,
+  "ne": "Wooden Robot Hand Model"
  },
  {
   "h": "kidrise-wooden-model-toy-periscope",
@@ -135,7 +142,8 @@ window.KR_PRODUCTS = [
   "area": "build",
   "vendor": "Kidrise🧒🏻STEM香港教育玩具｜STEAM科學實驗玩具｜STEM幼兒教育玩具｜啟智早教玩具｜蒙特梭利教具",
   "r": 4.5,
-  "rc": 70
+  "rc": 70,
+  "ne": "Wooden Periscope Model"
  },
  {
   "h": "kidrise-wooden-model-toy-lift",
@@ -152,7 +160,8 @@ window.KR_PRODUCTS = [
   "area": "build",
   "vendor": "Kidrise🧒🏻STEM香港教育玩具｜STEAM科學實驗玩具｜STEM幼兒教育玩具｜啟智早教玩具｜蒙特梭利教具",
   "r": 4.3,
-  "rc": 86
+  "rc": 86,
+  "ne": "Wooden Lift Model"
  },
  {
   "h": "kidrise-wooden-model-toy-hydraulic-excavator",
@@ -169,7 +178,8 @@ window.KR_PRODUCTS = [
   "area": "build",
   "vendor": "Kidrise🧒🏻STEM香港教育玩具｜STEAM科學實驗玩具｜STEM幼兒教育玩具｜啟智早教玩具｜蒙特梭利教具",
   "r": 4.3,
-  "rc": 94
+  "rc": 94,
+  "ne": "Wooden Hydraulic Excavator Model"
  },
  {
   "h": "kidrise-wooden-model-toy-butterfly",
@@ -186,7 +196,8 @@ window.KR_PRODUCTS = [
   "area": "build",
   "vendor": "Kidrise🧒🏻STEM香港教育玩具｜STEAM科學實驗玩具｜STEM幼兒教育玩具｜啟智早教玩具｜蒙特梭利教具",
   "r": 4.6,
-  "rc": 76
+  "rc": 76,
+  "ne": "Wooden Flapping Butterfly Model"
  },
  {
   "h": "kidrise-mechanical-paper-models-maternal-dilemma",
@@ -203,7 +214,8 @@ window.KR_PRODUCTS = [
   "area": "build",
   "vendor": "Kidrise🧒🏻STEM香港教育玩具｜STEAM科學實驗玩具｜STEM幼兒教育玩具｜啟智早教玩具｜蒙特梭利教具",
   "r": 4.6,
-  "rc": 98
+  "rc": 98,
+  "ne": "Moving Paper Model: Busy Mother Bird"
  },
  {
   "h": "ambo-funtamin-dinosaur-torch-projector",
@@ -220,7 +232,8 @@ window.KR_PRODUCTS = [
   "area": "sensory",
   "vendor": "Ambo Funtamin",
   "r": 4.5,
-  "rc": 59
+  "rc": 59,
+  "ne": "Dinosaur Torch Projector"
  },
  {
   "h": "kidrise-engineering-dont-bother-jerry-preschool-kids-toy",
@@ -236,7 +249,8 @@ window.KR_PRODUCTS = [
   "area": "game",
   "vendor": "香港STEM教育玩具",
   "r": 4.7,
-  "rc": 82
+  "rc": 82,
+  "ne": "Cheese Push Family Game"
  },
  {
   "h": "kidrise-mathematics-neoland-animal-board-game-for-kids",
@@ -253,7 +267,8 @@ window.KR_PRODUCTS = [
   "area": "logic",
   "vendor": "NEOLAND",
   "r": 4.7,
-  "rc": 86
+  "rc": 86,
+  "ne": "NEOLAND Colour Code Matching Game"
  },
  {
   "h": "kidrise-science-bresser-binoculars-for-kids",
@@ -270,7 +285,8 @@ window.KR_PRODUCTS = [
   "area": "science",
   "vendor": "BRESSER",
   "r": 4.5,
-  "rc": 138
+  "rc": 138,
+  "ne": "BRESSER Binoculars for Kids"
  },
  {
   "h": "kidrise-montessori-goryeo-maze-animal-farm",
@@ -287,7 +303,8 @@ window.KR_PRODUCTS = [
   "area": "motor",
   "vendor": "Goryeo Baby",
   "r": 4.6,
-  "rc": 128
+  "rc": 128,
+  "ne": "Animal Farm Magnetic Bead Maze"
  },
  {
   "h": "kidrise-engineering-toi-find-it-out-with-a-small-flashlight",
@@ -304,7 +321,8 @@ window.KR_PRODUCTS = [
   "area": "game",
   "vendor": "TOI",
   "r": 4.5,
-  "rc": 84
+  "rc": 84,
+  "ne": "TOI Find It with a Torch"
  },
  {
   "h": "kidrise-montessori-goryeo-harvest-carrots-game",
@@ -321,7 +339,8 @@ window.KR_PRODUCTS = [
   "area": "motor",
   "vendor": "Goryeo Baby",
   "r": 4.6,
-  "rc": 88
+  "rc": 88,
+  "ne": "Wooden Carrot Harvest Game"
  },
  {
   "h": "kidrise-montessori-early-childhood-education-cloth-book",
@@ -337,7 +356,8 @@ window.KR_PRODUCTS = [
   "area": "sensory",
   "vendor": "Jollybaby",
   "r": 4.5,
-  "rc": 200
+  "rc": 200,
+  "ne": "3D Baby Cloth Book"
  },
  {
   "h": "montessori-goryeobaby-elephant-xylophone",
@@ -354,7 +374,8 @@ window.KR_PRODUCTS = [
   "area": "sensory",
   "vendor": "Goryeo Baby",
   "r": 4.5,
-  "rc": 115
+  "rc": 115,
+  "ne": "Elephant Wooden Xylophone (8 notes)"
  },
  {
   "h": "kidrise-montessori-saalin-finger-mazes",
@@ -370,7 +391,8 @@ window.KR_PRODUCTS = [
   "area": "motor",
   "vendor": "Saalin",
   "r": 4.7,
-  "rc": 99
+  "rc": 99,
+  "ne": "Two-Hand Finger Mazes"
  },
  {
   "h": "kidrise-montessori-goryeo-baby-jenga-block",
@@ -387,7 +409,8 @@ window.KR_PRODUCTS = [
   "area": "game",
   "vendor": "Goryeo Baby",
   "r": 4.7,
-  "rc": 160
+  "rc": 160,
+  "ne": "Wooden Stacking Tower Game"
  },
  {
   "h": "kidrise-maths-pinwheel-make-it-6-puzzle",
@@ -404,7 +427,8 @@ window.KR_PRODUCTS = [
   "area": "logic",
   "vendor": "Pinwheel",
   "r": 4.7,
-  "rc": 121
+  "rc": 121,
+  "ne": "Pinwheel Magnetic Hexagon Maths Puzzle"
  },
  {
   "h": "kidrise-montessori-onshine-number-learning-locks",
@@ -421,7 +445,8 @@ window.KR_PRODUCTS = [
   "area": "motor",
   "vendor": "Onshine",
   "r": 4.6,
-  "rc": 129
+  "rc": 129,
+  "ne": "Number Locks Learning Toy"
  },
  {
   "h": "kidrise-engineering-toi-franks-fish-shop-kid-set",
@@ -438,7 +463,8 @@ window.KR_PRODUCTS = [
   "area": "game",
   "vendor": "TOI",
   "r": 4.5,
-  "rc": 80
+  "rc": 80,
+  "ne": "TOI Magnetic Fishing Set"
  },
  {
   "h": "kidrise-kids-electric-screwdriver-screws-gears-puzzle-237pcs",
@@ -455,7 +481,8 @@ window.KR_PRODUCTS = [
   "area": "build",
   "vendor": "Puzzle Creative",
   "r": 4.6,
-  "rc": 95
+  "rc": 95,
+  "ne": "Kids Screwdriver Building Kit (237 pcs)"
  },
  {
   "h": "kidrise-mathematics-hape-e5522-pallina-original-toy",
@@ -472,7 +499,8 @@ window.KR_PRODUCTS = [
   "area": "game",
   "vendor": "Hape",
   "r": 4.6,
-  "rc": 82
+  "rc": 82,
+  "ne": "Hape Pallina Ball Drop Game"
  },
  {
   "h": "kidrise-montessori-guidecraft-interlox-discs-96pcs-set",
@@ -489,7 +517,8 @@ window.KR_PRODUCTS = [
   "area": "build",
   "vendor": "Guidecraft",
   "r": 4.6,
-  "rc": 134
+  "rc": 134,
+  "ne": "Guidecraft Interlox Discs (96 pcs)"
  },
  {
   "h": "kidrise-engineering-toy-kitchen-cooking-set",
@@ -506,7 +535,8 @@ window.KR_PRODUCTS = [
   "area": "pretend",
   "vendor": "香港STEM教育玩具",
   "r": 4.6,
-  "rc": 101
+  "rc": 101,
+  "ne": "Toddler Play Kitchen Cooking Set"
  },
  {
   "h": "kidrise-mathematics-mathforlove-prime-climb",
@@ -523,7 +553,8 @@ window.KR_PRODUCTS = [
   "area": "logic",
   "vendor": "Math for Love",
   "r": 4.6,
-  "rc": 109
+  "rc": 109,
+  "ne": "Prime Climb Maths Board Game"
  },
  {
   "h": "kidrise-technology-ge634-hydraulic-robot-glove-toy",
@@ -539,7 +570,8 @@ window.KR_PRODUCTS = [
   "area": "build",
   "vendor": "Pro'sKit寶工",
   "r": 4.6,
-  "rc": 90
+  "rc": 90,
+  "ne": "ProsKit Hydraulic Robot Glove"
  },
  {
   "h": "kidrise-technology-hanye-diy-stem-robot-car",
@@ -555,7 +587,8 @@ window.KR_PRODUCTS = [
   "area": "build",
   "vendor": "HANYE",
   "r": 4.7,
-  "rc": 108
+  "rc": 108,
+  "ne": "Screw-Together STEM Car Kit"
  },
  {
   "h": "kidrise-engineering-hape-e8355-urban-themed-labyrinth",
@@ -572,7 +605,8 @@ window.KR_PRODUCTS = [
   "area": "motor",
   "vendor": "Hape",
   "r": 4.5,
-  "rc": 107
+  "rc": 107,
+  "ne": "Hape Wooden Marble Labyrinth"
  },
  {
   "h": "kidrise-mathematics-giromag-magnetic-puzzle-toy-80",
@@ -589,7 +623,8 @@ window.KR_PRODUCTS = [
   "area": "build",
   "vendor": "Giromag",
   "r": 4.6,
-  "rc": 80
+  "rc": 80,
+  "ne": "Giromag Magnetic Tiles (80 pcs)"
  },
  {
   "h": "ambo-funtamin-solar-system-projector-high-quality",
@@ -606,6 +641,7 @@ window.KR_PRODUCTS = [
   "area": "science",
   "vendor": "Ambo Funtamin",
   "r": 4.5,
-  "rc": 104
+  "rc": 104,
+  "ne": "Solar System Star Projector"
  }
 ];

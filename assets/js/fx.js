@@ -7,6 +7,7 @@
    ========================================================================== */
 (function () {
   "use strict";
+  var EN = /^en/i.test(document.documentElement.lang || "");
   var doc = document;
   var root = doc.documentElement;
   var reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -298,9 +299,9 @@
     var txt = "";
     var mode = "";
     if (t.closest) {
-      if (t.closest(".pcard")) { mode = "big"; txt = "睇睇"; }
-      else if (t.closest(".box3d-stage")) { mode = "big"; txt = "拖曳"; }
-      else if (t.closest(".collage")) { mode = "big"; txt = "撳我"; }
+      if (t.closest(".pcard")) { mode = "big"; txt = EN ? "View" : "睇睇"; }
+      else if (t.closest(".box3d-stage")) { mode = "big"; txt = EN ? "Drag" : "拖曳"; }
+      else if (t.closest(".collage")) { mode = "big"; txt = EN ? "Tap" : "撳我"; }
       else if (t.closest("a, button, summary, label, input, select, textarea, [role=tab]")) mode = "link";
       else if (t.closest(".section--ink, .footer")) mode = "dark";
     }

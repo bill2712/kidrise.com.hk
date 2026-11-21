@@ -4,6 +4,10 @@
 (function () {
   "use strict";
   document.documentElement.classList.remove("no-js");
+  // 語言：<html lang="en-HK"> 嘅頁面用英文字串，連結加 /en 前綴
+  var EN = /^en/i.test(document.documentElement.lang || "");
+  var T = function (zh, en) { return EN ? en : zh; };
+  var LP = EN ? "/en" : "";
 
   /* ---------- 基本設定（如有更改，只需修改這裡） ---------- */
   var KR = (window.KR = {
@@ -14,23 +18,26 @@
       return "utm_source=kidrise.com.hk&utm_medium=referral&utm_campaign=" + encodeURIComponent(campaign || "brand_site");
     },
     productUrl: function (handle, campaign) {
-      return KR.shop + "/products/" + handle + "?" + KR.utm(campaign);
+      return KR.shop + LP + "/products/" + handle + "?" + KR.utm(campaign);
     },
     collectionUrl: function (handle, campaign) {
-      return KR.shop + "/collections/" + encodeURIComponent(handle) + "?" + KR.utm(campaign);
+      return KR.shop + LP + "/collections/" + encodeURIComponent(handle) + "?" + KR.utm(campaign);
     },
+    lang: EN ? "en" : "zh",
   });
 
   var AREAS = {
-    sensory: { zh: "感官探索", color: "coral" },
-    motor: { zh: "手眼協調", color: "sun" },
-    build: { zh: "拼砌建構", color: "sky" },
-    pretend: { zh: "角色扮演", color: "lilac" },
-    logic: { zh: "邏輯思維", color: "mint" },
-    science: { zh: "科學探索", color: "sky" },
-    game: { zh: "親子桌遊", color: "coral" },
+    sensory: { zh: T("感官探索", "Sensory play"), color: "coral" },
+    motor: { zh: T("手眼協調", "Fine motor"), color: "sun" },
+    build: { zh: T("拼砌建構", "Building"), color: "sky" },
+    pretend: { zh: T("角色扮演", "Pretend play"), color: "lilac" },
+    logic: { zh: T("邏輯思維", "Logic"), color: "mint" },
+    science: { zh: T("科學探索", "Science"), color: "sky" },
+    game: { zh: T("親子桌遊", "Family games"), color: "coral" },
   };
-  var AGE_LABEL = { "1-2": "1–2 歲", "3-5": "3–5 歲", "6-8": "6–8 歲", "9+": "9 歲+" };
+  var AGE_LABEL = EN ? { "1-2": "Ages 1–2", "3-5": "Ages 3–5", "6-8": "Ages 6–8", "9+": "Ages 9+" } : { "1-2": "1–2 歲", "3-5": "3–5 歲", "6-8": "6–8 歲", "9+": "9 歲+" };
+  var yrs = function (a, b) { return EN ? "Ages " + a + "–" + b : a + "–" + b + " 歲"; };
+  var mins = function (m) { return EN ? "About " + m + " min" : "約 " + m + " 分鐘"; };
   var AGE_COLLECTION = { "1-2": "適合0-3歲", "3-5": "適合3-6歲", "6-8": "適合6-11歲", "9+": "適合11-歲" };
 
   var $ = function (s, r) { return (r || document).querySelector(s); };
@@ -167,15 +174,16 @@
   /* ---------- Product cards ---------- */
   function productCard(p, campaign) {
     var badges = "";
-    if (p.own) badges += '<span class="chip chip--ink">Kidrise 自家品牌</span>';
+    if (p.own) badges += '<span class="chip chip--ink">' + T("Kidrise 自家品牌", "Kidrise original") + "</span>";
+    var name = EN && p.ne ? p.ne : p.n;
     if (p.area && AREAS[p.area]) badges += '<span class="chip chip--' + AREAS[p.area].color + '">' + AREAS[p.area].zh + "</span>";
     var ages = (p.ages || []).map(function (a) { return "<span>" + (AGE_LABEL[a] || a) + "</span>"; }).join("");
     var compare = p.c && p.c > p.p ? "<s>" + money(p.c) + "</s>" : "";
     return (
-      '<a class="pcard" href="' + esc(KR.productUrl(p.h, campaign)) + '" target="_blank" rel="noopener" title="' + esc(p.full) + '">' +
-      '<div class="pcard__img"><img loading="lazy" decoding="async" src="' + esc(p.img) + '" alt="' + esc(p.n) + '" width="640" height="640"><div class="pcard__badges">' + badges + "</div></div>" +
-      '<div class="pcard__body"><div class="pcard__name">' + esc(p.n) + "</div>" +
-      (p.rc ? '<div class="pcard__rate" aria-label="網店評分 ' + p.r + ' / 5，' + p.rc + ' 個評價"><span class="stars" style="--r:' + p.r + '" aria-hidden="true">★★★★★</span><b>' + p.r + "</b><span>(" + p.rc + ")</span></div>" : "") +
+      '<a class="pcard" href="' + esc(KR.productUrl(p.h, campaign)) + '" target="_blank" rel="noopener" title="' + esc(EN && p.ne ? p.ne : p.full) + '">' +
+      '<div class="pcard__img"><img loading="lazy" decoding="async" src="' + esc(p.img) + '" alt="' + esc(name) + '" width="640" height="640"><div class="pcard__badges">' + badges + "</div></div>" +
+      '<div class="pcard__body"><div class="pcard__name">' + esc(name) + "</div>" +
+      (p.rc ? '<div class="pcard__rate" aria-label="' + T("網店評分 " + p.r + " / 5，" + p.rc + " 個評價", "Rated " + p.r + " out of 5 from " + p.rc + " reviews") + '"><span class="stars" style="--r:' + p.r + '" aria-hidden="true">★★★★★</span><b>' + p.r + "</b><span>(" + p.rc + ")</span></div>" : "") +
       '<div class="pcard__ages">' + ages + "</div>" +
       '<div class="pcard__foot"><div class="pcard__price">' + compare + money(p.p) + "</div>" +
       '<span class="pcard__go" aria-hidden="true">' + ARROW + "</span></div></div></a>"
@@ -187,7 +195,7 @@
   function render(el, list, campaign) {
     if (!el) return;
     if (!list.length) {
-      el.innerHTML = '<div class="finder__empty" style="grid-column:1/-1">暫時未有符合條件的精選，請試試其他篩選，或直接<a class="mark" href="' + esc(KR.collectionUrl("all", campaign)) + '" target="_blank" rel="noopener">瀏覽全部玩具</a>。</div>';
+      el.innerHTML = '<div class="finder__empty" style="grid-column:1/-1">' + T("暫時未有符合條件的精選，請試試其他篩選，或直接", "No picks match these filters yet. Try another filter, or ") + '<a class="mark" href="' + esc(KR.collectionUrl("all", campaign)) + '" target="_blank" rel="noopener">' + T("瀏覽全部玩具", "browse all toys") + "</a>" + T("。", ".") + "</div>";
       return;
     }
     el.innerHTML = list.map(function (p) { return productCard(p, campaign); }).join("");
@@ -241,6 +249,34 @@
     },
   };
 
+  var AGE_INFO_EN = {
+    "1-2": {
+      title: "Ages 1–2: discovering the world through the senses",
+      lede: "Toddlers learn by touching, listening and grasping. Choose simple, sturdy toys with no small parts.",
+      points: ["Sensory play: cloth books, xylophones, different textures", "Gross and fine motor: grasping, posting, banging", "Cause and effect: \u201cI press it, something happens\u201d"],
+      tip: "Parent tip: put out only 2–3 toys at a time and your child will play with more focus.",
+    },
+    "3-5": {
+      title: "Ages 3–5: nimbler hands, first rules",
+      lede: "Preschoolers love matching, sorting and simple rule games, and they love acting like grown-ups.",
+      points: ["Hand–eye coordination: mazes, screws, peg games", "Early logic: colour and shape matching, counting", "Social and language skills: pretend play, cooperative board games"],
+      tip: "Parent tip: games you can play together for 15 minutes beat solo toys.",
+    },
+    "6-8": {
+      title: "Ages 6–8: hands-on experiments and endless \u201cwhy?\u201d",
+      lede: "In primary school, children want to know why things happen. It is the best time to build scientific thinking and problem solving.",
+      points: ["Science: microscopes, telescopes, light and shadow", "Engineering: wooden models, mechanisms, construction", "Strategy and maths: board games, magnetic puzzles"],
+      tip: "Parent tip: match toys to the primary science topics (light, plants, simple circuits) so school learning sticks.",
+    },
+    "9+": {
+      title: "Ages 9+: bigger, harder projects",
+      lede: "Upper-primary kids want a real challenge and a finished piece of work. The sense of achievement is the best motivator.",
+      points: ["Advanced engineering: hydraulics, solar power, robots", "Observation logs: digital microscopes, stargazing missions", "Strategy games: maths, deduction, teamwork"],
+      tip: "Parent tip: ask your child to film their build or keep an observation journal. The learning lasts longer.",
+    },
+  };
+  if (EN) AGE_INFO = AGE_INFO_EN;
+
   $$("[data-agetabs]").forEach(function (root) {
     var tabs = $$(".agetab", root);
     var grid = $("[data-age-grid]", root);
@@ -257,7 +293,7 @@
           '<p class="muted small">' + esc(d.lede) + "</p>" +
           "<ul>" + d.points.map(function (x) { return "<li>" + esc(x) + "</li>"; }).join("") + "</ul>" +
           '<p class="notice">' + esc(d.tip) + "</p>" +
-          '<a class="btn btn--coral btn--sm mt-1" target="_blank" rel="noopener" href="' + esc(KR.collectionUrl(AGE_COLLECTION[age], campaign)) + '">瀏覽 ' + AGE_LABEL[age] + ' 全部玩具 <span class="arr">→</span></a>';
+          '<a class="btn btn--coral btn--sm mt-1" target="_blank" rel="noopener" href="' + esc(KR.collectionUrl(AGE_COLLECTION[age], campaign)) + '">' + T("瀏覽 " + AGE_LABEL[age] + " 全部玩具", "Shop all toys for " + AGE_LABEL[age].toLowerCase()) + ' <span class="arr">→</span></a>';
       }
       var list = PRODUCTS.filter(function (p) { return (p.ages || []).indexOf(age) > -1; });
       // 先顯示自家品牌，再按價格由低至高
@@ -313,7 +349,7 @@
   /* ---------- Gift finder ---------- */
   var finder = $("[data-finder]");
   if (finder) {
-    var steps = [
+    var stepsZh = [
       {
         key: "age", name: "收禮小朋友幾多歲？", hint: "以實際年齡揀選，我們會配合安全及發展需要推薦。",
         opts: [
@@ -343,6 +379,37 @@
         ],
       },
     ];
+    var stepsEn = [
+      {
+        key: "age", name: "How old is the birthday child?", hint: "Pick their actual age. We match picks to safety and development needs.",
+        opts: [
+          { v: "1-2", big: "Ages 1–2", sm: "Baby & toddler · senses", ico: "🧸" },
+          { v: "3-5", big: "Ages 3–5", sm: "Preschool · matching & pretend", ico: "🎨" },
+          { v: "6-8", big: "Ages 6–8", sm: "Lower primary · science & building", ico: "🔬" },
+          { v: "9+", big: "Ages 9+", sm: "Upper primary · bigger projects", ico: "🚀" },
+        ],
+      },
+      {
+        key: "budget", name: "What's your budget?", hint: "Final prices are shown at the shop checkout.",
+        opts: [
+          { v: "0-199", big: "Under $199", sm: "Party favours · small gifts", ico: "🎈" },
+          { v: "200-399", big: "$200–399", sm: "Most popular birthday gifts", ico: "🎁" },
+          { v: "400-699", big: "$400–699", sm: "A substantial gift", ico: "🌟" },
+          { v: "700-99999", big: "$700+", sm: "A big gift that lasts for years", ico: "🏆" },
+        ],
+      },
+      {
+        key: "interest", name: "They love…", hint: "Not sure? Pick \u201cA bit of everything\u201d.",
+        opts: [
+          { v: "science", big: "Exploring", sm: "Observing · experiments · stars", ico: "🔭" },
+          { v: "build", big: "Building", sm: "Models · blocks · mechanisms", ico: "🛠️" },
+          { v: "logic|game", big: "Games", sm: "Board games · puzzles · maths", ico: "🎲" },
+          { v: "sensory|motor|pretend", big: "Hands-on play", sm: "Senses · fine motor · pretend", ico: "🖐️" },
+          { v: "any", big: "A bit of everything", sm: "Pick the best for me", ico: "✨" },
+        ],
+      },
+    ];
+    var steps = EN ? stepsEn : stepsZh;
     var ans = {};
     var idx = 0;
     var body = $(".finder__body", finder);
@@ -352,7 +419,7 @@
     function drawStep() {
       var s = steps[idx];
       bar.style.width = ((idx + 1) / (steps.length + 1)) * 100 + "%";
-      stepName.textContent = "第 " + (idx + 1) + " / " + steps.length + " 步";
+      stepName.textContent = T("第 " + (idx + 1) + " / " + steps.length + " 步", "Step " + (idx + 1) + " of " + steps.length);
       body.innerHTML =
         '<h3 class="finder__q">' + esc(s.name) + '</h3><p class="muted">' + esc(s.hint) + "</p>" +
         '<div class="finder__opts" role="group">' +
@@ -360,8 +427,8 @@
           return '<button type="button" class="opt" data-v="' + esc(o.v) + '" aria-pressed="' + (ans[s.key] === o.v ? "true" : "false") + '"><span class="opt__emoji" aria-hidden="true">' + o.ico + '</span><span class="opt__big">' + esc(o.big) + '</span><span class="opt__sm">' + esc(o.sm) + "</span></button>";
         }).join("") +
         "</div>" +
-        '<div class="finder__nav">' + (idx > 0 ? '<button type="button" class="btn btn--ghost btn--sm" data-back>← 上一步</button>' : "<span></span>") +
-        '<span class="small muted">揀選後會自動進入下一步</span></div>';
+        '<div class="finder__nav">' + (idx > 0 ? '<button type="button" class="btn btn--ghost btn--sm" data-back>' + T("← 上一步", "← Back") + "</button>" : "<span></span>") +
+        '<span class="small muted">' + T("揀選後會自動進入下一步", "Tap an option to continue") + "</span></div>";
       $$(".opt", body).forEach(function (b) {
         b.addEventListener("click", function () {
           ans[s.key] = b.getAttribute("data-v");
@@ -378,7 +445,7 @@
 
     function drawResult() {
       bar.style.width = "100%";
-      stepName.textContent = "為你配對完成！";
+      stepName.textContent = T("為你配對完成！", "Here are your matches!");
       track("gift_finder_complete", { age: ans.age, budget: ans.budget, interest: ans.interest });
       var r = ans.budget.split("-").map(parseFloat);
       var interests = ans.interest === "any" ? null : ans.interest.split("|");
@@ -389,25 +456,25 @@
       var list = exact.slice().sort(byOwn);
       if (list.length < 4) {
         var extra = base.filter(function (p) { return p.p >= r[0] && p.p <= r[1] && list.indexOf(p) < 0; }).sort(byOwn);
-        if (extra.length) { list = list.concat(extra); note = (exact.length ? "頭 " + exact.length + " 件最符合興趣；" : "") + "另加入同一預算內的其他人氣之選。"; }
+        if (extra.length) { list = list.concat(extra); note = EN ? (exact.length ? "The first " + exact.length + " match their interest best. " : "") + "We've added other popular picks in the same budget." : (exact.length ? "頭 " + exact.length + " 件最符合興趣；" : "") + "另加入同一預算內的其他人氣之選。"; }
       }
       if (list.length < 3) {
         var mid = (r[0] + Math.min(r[1], 1200)) / 2;
         list = list.concat(base.filter(function (p) { return list.indexOf(p) < 0; }).sort(function (a, b) { return Math.abs(a.p - mid) - Math.abs(b.p - mid); }));
-        note = "這個預算內的精選較少，以下加入了最接近預算的推介；網店內還有更多選擇。";
+        note = T("這個預算內的精選較少，以下加入了最接近預算的推介；網店內還有更多選擇。", "There are only a few picks in this budget, so we've added the closest matches. The shop has many more.");
       }
       list = list.slice(0, 8);
       var ageOpt = steps[0].opts.filter(function (o) { return o.v === ans.age; })[0];
       var budOpt = steps[1].opts.filter(function (o) { return o.v === ans.budget; })[0];
       var intOpt = steps[2].opts.filter(function (o) { return o.v === ans.interest; })[0];
       body.innerHTML =
-        '<div class="finder__result-head"><div><h3 class="finder__q">為你揀選的 ' + list.length + " 份禮物</h3>" +
+        '<div class="finder__result-head"><div><h3 class="finder__q">' + T("為你揀選的 " + list.length + " 份禮物", list.length + " gift ideas for you") + "</h3>" +
         '<div class="finder__summary"><span class="chip chip--mint">' + esc(ageOpt.big) + '</span><span class="chip chip--coral">' + esc(budOpt.big) + '</span><span class="chip chip--sky">' + esc(intOpt.big) + "</span></div>" +
         (note ? '<p class="small muted mt-1 mb-0">' + esc(note) + "</p>" : "") +
-        '</div><div class="flex"><button type="button" class="btn btn--ghost btn--sm" data-restart>↺ 重新配對</button>' +
-        '<a class="btn btn--sm" target="_blank" rel="noopener" href="' + esc(KR.collectionUrl("kidrise-birthday-gift-kids-toy-stem-montessori", "gift_finder")) + '">更多生日禮物 <span class="arr">→</span></a></div></div>' +
+        '</div><div class="flex"><button type="button" class="btn btn--ghost btn--sm" data-restart>' + T("↺ 重新配對", "↺ Start again") + "</button>" +
+        '<a class="btn btn--sm" target="_blank" rel="noopener" href="' + esc(KR.collectionUrl("kidrise-birthday-gift-kids-toy-stem-montessori", "gift_finder")) + '">' + T("更多生日禮物", "More birthday gifts") + ' <span class="arr">→</span></a></div></div>' +
         '<div class="pgrid pgrid--4">' + list.map(function (p) { return productCard(p, "gift_finder"); }).join("") + "</div>" +
-        '<p class="pnote">✓ 可於網店加購禮物包裝　✓ 滿 $400 免運費（包括住宅）　✓ 價錢以網店結帳頁為準</p>';
+        '<p class="pnote">' + T("✓ 可於網店加購禮物包裝　✓ 滿 $400 免運費（包括住宅）　✓ 價錢以網店結帳頁為準", "✓ Gift wrapping available at checkout　✓ Free delivery over $400 (homes included)　✓ Final prices at the shop checkout") + "</p>";
       $("[data-restart]", body).addEventListener("click", function () { ans = {}; idx = 0; drawStep(); });
       celebrate(finder, { count: 90 });
     }
@@ -449,22 +516,22 @@
       if (!h) return "";
       var p = PRODUCTS.filter(function (x) { return x.h === h; })[0];
       if (!p) return "";
-      return '<a class="btn btn--paper btn--sm" target="_blank" rel="noopener" href="' + esc(KR.productUrl(p.h, "activity_" + current.t)) + '">想玩得更深入？' + esc(p.n) + ' <span class="arr">→</span></a>';
+      return '<a class="btn btn--paper btn--sm" target="_blank" rel="noopener" href="' + esc(KR.productUrl(p.h, "activity_" + current.slug)) + '">' + T("想玩得更深入？", "Go further: ") + esc(EN && p.ne ? p.ne : p.n) + ' <span class="arr">→</span></a>';
     }
     function draw(a) {
       current = a;
       if (!a) {
-        cardEl.innerHTML = '<div class="actcard__top"><div><h3 class="actcard__title">冇符合條件的活動</h3><p class="muted mb-0">試試放寬時間或地點篩選。</p></div></div>';
+        cardEl.innerHTML = '<div class="actcard__top"><div><h3 class="actcard__title">' + T("冇符合條件的活動", "No activities match") + '</h3><p class="muted mb-0">' + T("試試放寬時間或地點篩選。", "Try a longer time or a different place.") + "</p></div></div>";
         return;
       }
       cardEl.innerHTML =
         '<div class="actcard__top"><div class="actcard__icon" style="background:var(--' + a.c + (a.c === "sun" ? "" : "-soft") + ')" aria-hidden="true">' + a.ico + "</div>" +
-        '<div><span class="eyebrow eyebrow--coral" style="margin-bottom:6px">今日親子任務</span><h3 class="actcard__title">' + esc(a.t) + "</h3>" +
-        '<div class="actcard__meta"><span class="chip chip--mint">' + a.a[0] + "–" + a.a[1] + ' 歲</span><span class="chip">⏱ 約 ' + a.m + ' 分鐘</span><span class="chip chip--sky">' + (a.place === "home" ? "🏠 室內" : "🌳 戶外") + '</span><span class="chip chip--' + AREAS[a.area].color + '">' + AREAS[a.area].zh + "</span></div></div></div>" +
-        '<div class="actcard__body"><div><h4>🧰 準備材料</h4><ul class="ticks">' + a.mat.map(function (x) { return "<li>" + esc(x) + "</li>"; }).join("") + "</ul></div>" +
-        "<div><h4>🧭 玩法步驟</h4><ol>" + a.s.map(function (x) { return "<li>" + esc(x) + "</li>"; }).join("") + "</ol>" +
-        '<div class="actcard__learn"><b>孩子學到甚麼：</b>' + esc(a.l) + "</div></div></div>" +
-        '<div class="actcard__actions"><button type="button" class="btn btn--coral btn--sm" data-act-next>🎲 再抽一個</button><a class="btn btn--paper btn--sm" href="/activities/' + a.slug + '/">📄 完整活動卡及列印</a>' + relatedHtml(a.rel) + "</div>";
+        '<div><span class="eyebrow eyebrow--coral" style="margin-bottom:6px">' + T("今日親子任務", "Today's family mission") + '</span><h3 class="actcard__title">' + esc(a.t) + "</h3>" +
+        '<div class="actcard__meta"><span class="chip chip--mint">' + yrs(a.a[0], a.a[1]) + '</span><span class="chip">⏱ ' + mins(a.m) + '</span><span class="chip chip--sky">' + (a.place === "home" ? T("🏠 室內", "🏠 Indoors") : T("🌳 戶外", "🌳 Outdoors")) + '</span><span class="chip chip--' + AREAS[a.area].color + '">' + AREAS[a.area].zh + "</span></div></div></div>" +
+        '<div class="actcard__body"><div><h4>' + T("🧰 準備材料", "🧰 You'll need") + '</h4><ul class="ticks">' + a.mat.map(function (x) { return "<li>" + esc(x) + "</li>"; }).join("") + "</ul></div>" +
+        "<div><h4>" + T("🧭 玩法步驟", "🧭 How to play") + "</h4><ol>" + a.s.map(function (x) { return "<li>" + esc(x) + "</li>"; }).join("") + "</ol>" +
+        '<div class="actcard__learn"><b>' + T("孩子學到甚麼：", "What they learn: ") + "</b>" + esc(a.l) + "</div></div></div>" +
+        '<div class="actcard__actions"><button type="button" class="btn btn--coral btn--sm" data-act-next>' + T("🎲 再抽一個", "🎲 Draw another") + '</button><a class="btn btn--paper btn--sm" href="' + LP + "/activities/" + a.slug + '/">' + T("📄 完整活動卡及列印", "📄 Full activity card & print") + "</a>" + relatedHtml(a.rel) + "</div>";
       cardEl.classList.remove("flip"); void cardEl.offsetWidth; cardEl.classList.add("flip");
       $("[data-act-next]", cardEl).addEventListener("click", pickFx);
     }
@@ -501,8 +568,8 @@
       lib.innerHTML = ACTIVITIES.map(function (a, i) {
         return '<button type="button" class="skill" data-act-i="' + i + '" style="text-align:left;cursor:pointer">' +
           '<span class="skill__ico" style="background:var(--' + a.c + (a.c === "sun" ? "" : "-soft") + ');font-size:28px" aria-hidden="true">' + a.ico + "</span>" +
-          "<h3>" + esc(a.t) + '</h3><p>' + a.a[0] + "–" + a.a[1] + " 歲 · 約 " + a.m + " 分鐘 · " + (a.place === "home" ? "室內" : "戶外") + "</p>" +
-          '<span class="skill__more">打開活動卡 →</span></button>';
+          "<h3>" + esc(a.t) + "</h3><p>" + yrs(a.a[0], a.a[1]) + " · " + mins(a.m) + " · " + (a.place === "home" ? T("室內", "Indoors") : T("戶外", "Outdoors")) + "</p>" +
+          '<span class="skill__more">' + T("打開活動卡 →", "Open activity →") + "</span></button>";
       }).join("");
       $$("[data-act-i]", lib).forEach(function (b) {
         b.addEventListener("click", function () {
@@ -572,15 +639,15 @@
       if (!form.reportValidity()) return;
       var via = (e.submitter && e.submitter.getAttribute("data-send")) || "wa";
       var title = form.getAttribute("data-enquiry");
-      var lines = ["【" + title + "】"];
+      var lines = [T("【" + title + "】", "[" + title + "]")];
       $$("[data-label]", form).forEach(function (f) {
         var v;
         if (f.matches("fieldset")) {
-          v = $$("input:checked", f).map(function (i) { return i.value; }).join("、");
+          v = $$("input:checked", f).map(function (i) { return i.value; }).join(T("、", ", "));
         } else v = f.value;
-        if (v && String(v).trim()) lines.push(f.getAttribute("data-label") + "：" + String(v).trim());
+        if (v && String(v).trim()) lines.push(f.getAttribute("data-label") + T("：", ": ") + String(v).trim());
       });
-      lines.push("（來自 kidrise.com.hk）");
+      lines.push(T("（來自 kidrise.com.hk）", "(Sent from kidrise.com.hk/en)"));
       var text = lines.join("\n");
       track("generate_lead", { form_name: title, method: via });
       if (via === "mail") {
@@ -588,7 +655,7 @@
       } else {
         window.open("https://wa.me/" + KR.whatsapp + "?text=" + encodeURIComponent(text), "_blank", "noopener");
       }
-      toast("已為你準備好訊息，請在 " + (via === "mail" ? "電郵" : "WhatsApp") + " 確認送出 ✓");
+      toast(EN ? "Your message is ready. Please press send in " + (via === "mail" ? "your email app" : "WhatsApp") + " ✓" : "已為你準備好訊息，請在 " + (via === "mail" ? "電郵" : "WhatsApp") + " 確認送出 ✓");
     });
   });
 
@@ -600,7 +667,7 @@
     var INDEX = null, loading = null;
     var load = function () {
       if (INDEX) return Promise.resolve(INDEX);
-      if (!loading) loading = fetch("/search-index.json").then(function (r) { return r.json(); }).then(function (d) {
+      if (!loading) loading = fetch(EN ? "/search-index.en.json" : "/search-index.json").then(function (r) { return r.json(); }).then(function (d) {
         INDEX = d.map(function (x) { x._t = (x.t + " " + x.f).toLowerCase(); x._d = (x.d + " " + x.k).toLowerCase(); return x; });
         return INDEX;
       });
@@ -632,21 +699,22 @@
       });
       return out;
     };
-    var SUGGEST = ["月相", "科學實驗", "工作紙", "戶外", "生日禮物", "3 歲", "顯微鏡", "專注力", "學校"];
+    var SUGGEST = EN ? ["science", "outdoor", "rainy day", "birthday gift", "age 3", "microscope", "light", "school"] : ["月相", "科學實驗", "工作紙", "戶外", "生日禮物", "3 歲", "顯微鏡", "專注力", "學校"];
     var render = function (box, raw) {
       var q = norm(raw);
       if (!q) {
-        box.innerHTML = '<p class="search__hint">熱門搜尋</p><div class="search__chips">' +
+        box.innerHTML = '<p class="search__hint">' + T("熱門搜尋", "Popular searches") + '</p><div class="search__chips">' +
           SUGGEST.map(function (w) { return '<button type="button" class="chip" data-q="' + esc(w) + '">' + esc(w) + "</button>"; }).join("") + "</div>";
         return;
       }
       var res = INDEX.map(function (x) { return [score(x, q), x]; }).filter(function (r) { return r[0] > 0; })
         .sort(function (a, b) { return b[0] - a[0]; }).slice(0, 30);
       if (!res.length) {
-        box.innerHTML = '<p class="search__empty">找不到「' + esc(raw) + '」。試下其他字眼，或者 <a href="/resources/">瀏覽全部免費資源</a>。</p>';
+        box.innerHTML = EN ? '<p class="search__empty">Nothing found for \u201c' + esc(raw) + '\u201d. Try another word, or <a href="/en/activities/">browse all activities</a>.</p>'
+          : '<p class="search__empty">找不到「' + esc(raw) + '」。試下其他字眼，或者 <a href="/resources/">瀏覽全部免費資源</a>。</p>';
         return;
       }
-      box.innerHTML = '<p class="search__hint">' + res.length + (res.length === 30 ? "+" : "") + " 個結果</p><ul class=\"search__list\">" + res.map(function (r) {
+      box.innerHTML = '<p class="search__hint">' + res.length + (res.length === 30 ? "+" : "") + T(" 個結果", " results") + "</p><ul class=\"search__list\">" + res.map(function (r) {
         var x = r[1];
         return '<li><a class="search__item" href="' + x.u + '"><span class="search__ico" style="background:var(--' + x.c + '-soft)">' + (x.i || "📄") + "</span>" +
           '<span class="search__txt"><span class="search__kind">' + esc(x.k) + "</span><b>" + hl(x.t, q) + "</b><small>" + hl(x.d.slice(0, 70) + (x.d.length > 70 ? "…" : ""), q) + "</small></span></a></li>";
@@ -710,7 +778,7 @@
       pageInput.value = new URLSearchParams(location.search).get("q") || "";
       pageInput.form.addEventListener("submit", function (e) {
         e.preventDefault();
-        history.replaceState(null, "", "/search/?q=" + encodeURIComponent(pageInput.value.trim()));
+        history.replaceState(null, "", LP + "/search/?q=" + encodeURIComponent(pageInput.value.trim()));
         runPage();
       });
       runPage();
