@@ -181,13 +181,21 @@
     var compare = p.c && p.c > p.p ? "<s>" + money(p.c) + "</s>" : "";
     return (
       '<a class="pcard" href="' + esc(KR.productUrl(p.h, campaign)) + '" target="_blank" rel="noopener" title="' + esc(EN && p.ne ? p.ne : p.full) + '">' +
-      '<div class="pcard__img"><img loading="lazy" decoding="async" src="' + esc(p.img) + '" alt="' + esc(name) + '" width="640" height="640"><div class="pcard__badges">' + badges + "</div></div>" +
+      '<div class="pcard__img"><img loading="lazy" decoding="async" src="' + esc(p.img) + '"' + srcset(p.img) + ' alt="' + esc(name) + '" width="640" height="640"><div class="pcard__badges">' + badges + "</div></div>" +
       '<div class="pcard__body"><div class="pcard__name">' + esc(name) + "</div>" +
       (p.rc ? '<div class="pcard__rate" aria-label="' + T("網店評分 " + p.r + " / 5，" + p.rc + " 個評價", "Rated " + p.r + " out of 5 from " + p.rc + " reviews") + '"><span class="stars" style="--r:' + p.r + '" aria-hidden="true">★★★★★</span><b>' + p.r + "</b><span>(" + p.rc + ")</span></div>" : "") +
       '<div class="pcard__ages">' + ages + "</div>" +
       '<div class="pcard__foot"><div class="pcard__price">' + compare + money(p.p) + "</div>" +
       '<span class="pcard__go" aria-hidden="true">' + ARROW + "</span></div></div></a>"
     );
+  }
+  // Shopify CDN 圖片：按螢幕大細揀尺寸
+  function srcset(url) {
+    var m = /^(https:\/\/cdn\.shopify\.com\/[^?]+)\?width=(\d+)$/.exec(url || "");
+    if (!m) return "";
+    var max = parseInt(m[2], 10);
+    var ws = [160, 240, 360, 480, 640].filter(function (w) { return w < max; }).concat([max]);
+    return ' srcset="' + ws.map(function (w) { return m[1] + "?width=" + w + " " + w + "w"; }).join(", ") + '" sizes="(max-width: 600px) 46vw, (max-width: 1100px) 30vw, 300px"';
   }
   var ARROW = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>';
   KR.productCard = productCard;
